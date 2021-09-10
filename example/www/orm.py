@@ -59,19 +59,6 @@ async def execute(sql, args,autocommit=True):
       raise
     # 返回行数
     return affected
-  # async with __pool.get() as conn:
-  #   if not autocommit:
-  #     await conn.begin()
-  #   try:
-  #     async with conn.cursor(aiomysql.DictCursor) as cur:
-  #       await cur.execute(sql.replace('?', '%s'), args)
-  #       # rowcount 获取行数，应该表示的是该函数影响的行数
-  #       affected = cur.rowcount
-  #   except BaseException as e:
-  #     if not autocommit:
-  #         await conn.rollback()
-  #     raise
-  #   return affected
 
 def create_args_string(num):
     L = []
@@ -262,10 +249,10 @@ class Model(dict, metaclass=ModelMetaclass):
       logging.warn('failed to update by primary key: affected rows: %s' % rows)
 
   async def remove(self):
-        args = [self.getValue(self.__primary_key__)]
-        rows = await execute(self.__delete__, args)
-        if rows != 1:
-            logging.warn('failed to remove by primary key: affected rows: %s' % rows)
+    args = [self.getValue(self.__primary_key__)]
+    rows = await execute(self.__delete__, args)
+    if rows != 1:
+      logging.warn('failed to remove by primary key: affected rows: %s' % rows)
 
 
   
